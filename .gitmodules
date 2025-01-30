@@ -1,3 +1,3 @@
 [submodule "clientcreditsreal"]
-  path = clientcreditsreal
-  url = https://github.com/harrywilderr/clientcreditsreal.git
+	path = clientcreditsreal
+	url = https://github.com/harrywilderr/clientcreditsreal.git
