@@ -1,7 +1,5 @@
-const fetch = require('node-fetch'); // Install node-fetch if using Node.js
-
-exports.handler = async (event, context) => {
-  const { email } = event.queryStringParameters;
+export async function handler(event) {
+  const { email } = event.queryStringParameters || {};
 
   if (!email) {
     return {
@@ -10,7 +8,6 @@ exports.handler = async (event, context) => {
     };
   }
 
-  // Call your Google Apps Script URL here
   const googleScriptUrl = `https://script.google.com/macros/s/AKfycbyt8YmAJjeMH8g1qmfKl6ncE7_N9izIIqnezhSBZgExlB2PfEGY5pRbvpaHwr_cVCWG_A/exec?email=${encodeURIComponent(email)}`;
 
   try {
@@ -24,7 +21,7 @@ exports.handler = async (event, context) => {
   } catch (error) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Error fetching data from Google Apps Script.' }),
+      body: JSON.stringify({ error: 'Error fetching data from Google Apps Script.', details: error.message }),
     };
   }
-};
+}
