@@ -5,34 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuickEdits - Account Balance</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
+        
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Lato', sans-serif;
             background-color: #f8f8f8;
             text-align: center;
         }
         .logo img {
             max-width: 150px;
-            margin: 20px auto;
+            margin: 10px auto 5px;
         }
-        .container {
+        .container, .transaction-container {
             max-width: 500px;
-            margin: 20px auto;
+            margin: 15px auto;
             background: white;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
             text-align: left;
         }
         .balance {
             font-size: 18px;
             color: #666;
-            margin-top: 10px;
+            margin-bottom: 5px;
         }
         .credits {
             font-size: 32px;
             font-weight: bold;
             color: #000;
-            margin-top: 5px;
+            margin-bottom: 10px;
         }
         .refill {
             color: #007BFF;
@@ -44,22 +45,17 @@
         .refill:hover {
             text-decoration: underline;
         }
-        .transaction-container {
-            max-width: 500px;
-            margin: 20px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            text-align: left;
+        .refill:link {
+            target: _blank;
         }
         .transaction table {
             width: 100%;
             border-collapse: collapse;
+            text-align: center;
         }
         .transaction th, .transaction td {
             padding: 8px;
-            text-align: left;
+            text-align: center;
         }
         .transaction th {
             color: #666;
@@ -75,7 +71,7 @@
     <div class="container">
         <div class="balance">Account Balance</div>
         <div class="credits" id="creditBalance">Loading...</div>
-        <a href="https://quickedits.myclickfunnels.com/custom-package" class="refill">Refill Credits</a>
+        <a href="https://quickedits.myclickfunnels.com/custom-package" class="refill" target="_blank">Refill Credits</a>
     </div>
 
     <div class="transaction-container">
