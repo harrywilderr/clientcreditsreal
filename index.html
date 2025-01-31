@@ -46,7 +46,7 @@
             document.getElementById('userEmail').textContent = email;
 
             // Netlify function endpoint
-            const apiUrl = `https://your-netlify-site.netlify.app/.netlify/functions/fetchCredits?email=${encodeURIComponent(email)}`;
+            const apiUrl = `https://qeclientcredits.netlify.app/.netlify/functions/fetchCredits?email=${encodeURIComponent(email)}`;
 
             try {
                 const response = await fetch(apiUrl);
