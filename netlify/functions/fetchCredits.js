@@ -8,7 +8,7 @@ export async function handler(event) {
     };
   }
 
-  const googleScriptUrl = `https://script.google.com/macros/s/AKfycbyt8YmAJjeMH8g1qmfKl6ncE7_N9izIIqnezhSBZgExlB2PfEGY5pRbvpaHwr_cVCWG_A/exec?email=${encodeURIComponent(email)}`;
+  const googleScriptUrl = `https://script.google.com/macros/s/AKfycbw32FVUuiBKmLXSmtNH14Lr30KOL2IOtWl0RgojmPsuEf_4NwUVYjWE8YYKcyqNmcmZyQ/exec?email=${encodeURIComponent(email)}`;
 
   try {
     const response = await fetch(googleScriptUrl);
