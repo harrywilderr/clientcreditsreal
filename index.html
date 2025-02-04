@@ -3,134 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuickEdits - Account Balance</title>
+    <title>Quick Edits - Account Balance</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
-        
         body {
             font-family: 'Lato', sans-serif;
-            background-color: #f8f8f8;
+            background-color: #f9f9f9;
             text-align: center;
+            margin: 0;
+            padding: 20px;
         }
-        .logo img {
-            max-width: 150px;
-            margin: 10px auto 5px;
+        .logo {
+            margin-bottom: 10px;
+            max-width: 200px;
         }
-        .container, .transaction-container {
-            max-width: 700px;
-            margin: 15px auto;
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+        }
+        .card {
             background: white;
             padding: 20px;
             border-radius: 20px;
+            width: 100%;
+            box-sizing: border-box;
             text-align: left;
         }
-        .balance {
+        .balance-header {
             font-size: 18px;
-            color: #666;
+            color: gray;
             margin-bottom: 5px;
         }
-        .credits {
-            font-size: 32px;
+        .balance {
+            font-size: 24px;
             font-weight: bold;
-            color: #000;
-            margin-bottom: 5px;
         }
-        .extra-info {
-            font-size: 16px;
-            color: #333;
+        .refill-link {
+            display: block;
+            margin-top: 10px;
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+        .transaction-header {
+            font-size: 18px;
+            color: gray;
+            text-align: left;
             margin-bottom: 10px;
         }
-        .refill {
-            color: #007BFF;
-            text-decoration: none;
-            font-size: 14px;
-            display: inline-block;
-            margin-top: 5px;
-        }
-        .refill:hover {
-            text-decoration: underline;
-        }
-        .transaction table {
+        .transaction-table {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
             width: 100%;
-            border-collapse: collapse;
             text-align: center;
         }
-        .transaction th, .transaction td {
-            padding: 8px;
-            border-bottom: 1px solid #ddd;
+        .transaction-table div {
+            padding: 10px 0;
+            font-weight: bold;
         }
-        .transaction th {
-            color: #666;
+        .transaction-table .left {
+            text-align: left;
+        }
+        .transaction-table .center {
+            text-align: center;
+        }
+        .transaction-table .right {
+            text-align: right;
         }
     </style>
 </head>
 <body>
-
-    <div class="logo">
-        <img src="https://i.imgur.com/tjrJog0.png" alt="QuickEdits Logo">
-    </div>
-    
+    <img class="logo" src="https://i.imgur.com/tjrJog0.png" alt="Quick Edits Logo">
     <div class="container">
-        <div class="balance">Account Balance</div>
-        <div class="credits" id="creditBalance">Loading...</div>
-        <div class="extra-info" id="extraInfo">Loading...</div>
-        <a href="https://quickedits.myclickfunnels.com/custom-package" class="refill" target="_blank">Refill Credits</a>
+        <div class="card">
+            <div class="balance-header">Account Balance</div>
+            <div class="balance" id="credits">Loading...</div>
+            <a class="refill-link" href="https://quickedits.myclickfunnels.com/custom-package" target="_blank">Re-fill Credits</a>
+            <div id="extras" style="margin-top: 10px;"></div>
+        </div>
+        <div class="card">
+            <div class="transaction-header">Transaction History</div>
+            <div class="transaction-table" id="transactionTable">
+                <div class="left">Order Token</div>
+                <div class="center">Credit Usage</div>
+                <div class="right">Date</div>
+            </div>
+        </div>
     </div>
-
-    <div class="transaction-container">
-        <div class="balance">Transaction History</div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Order Token</th>
-                    <th>Credit Usage</th>
-                    <th>Date</th>
-                </tr>
-            </thead>
-            <tbody id="transactionHistory">
-            </tbody>
-        </table>
-    </div>
-
     <script>
-        function getEmailFromUrl() {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('email');
-        }
-
-        function fetchCredits() {
-            const email = getEmailFromUrl();
-            if (!email) {
-                document.getElementById("creditBalance").textContent = "Error: No email provided";
-                return;
-            }
-
-            fetch(`https://qeclientcredits.netlify.app/.netlify/functions/fetchCredits?email=${encodeURIComponent(email)}`)
+        const queryParams = new URLSearchParams(window.location.search);
+        const email = queryParams.get('email');
+        if (email) {
+            fetch(`https://qeclientcredits.netlify.app/.netlify/functions/fetchCredits?email=${email}`)
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById("creditBalance").textContent = `${data.credits} Credits`;
-                    document.getElementById("extraInfo").textContent = `${data.longFormsLeft} Long-forms Or ${data.shortFormsLeft} Short-forms Or ${data.thumbnailsLeft} Thumbnails`;
-                    
-                    const transactionTable = document.getElementById("transactionHistory");
-                    transactionTable.innerHTML = "";
+                    document.getElementById('credits').innerText = `${data.credits} Credits`;
+                    document.getElementById('extras').innerHTML = `
+                        ${data.longFormsLeft} Long-forms <br><b>OR</b><br>
+                        ${data.shortFormsLeft} Short-forms <br><b>OR</b><br>
+                        ${data.thumbnailsLeft} Thumbnails`;
+                    const transactionTable = document.getElementById('transactionTable');
                     data.orders.forEach(order => {
-                        const row = `<tr>
-                            <td>${order.orderToken}</td>
-                            <td>${order.creditUsage}</td>
-                            <td>${order.date}</td>
-                        </tr>`;
-                        transactionTable.innerHTML += row;
+                        const dateFormatted = new Date(order.date).toLocaleDateString('en-US', {
+                            month: '2-digit',
+                            day: '2-digit',
+                            year: 'numeric'
+                        });
+                        transactionTable.innerHTML += `
+                            <div class="left">${order.orderToken}</div>
+                            <div class="center">${order.creditUsage} Credits</div>
+                            <div class="right">${dateFormatted}</div>`;
                     });
                 })
-                .catch(error => {
-                    console.error("Error fetching credits:", error);
-                    document.getElementById("creditBalance").textContent = "Error loading credits";
-                });
+                .catch(error => console.error('Error fetching credits:', error));
         }
-
-        fetchCredits();
     </script>
-
 </body>
 </html>
 
