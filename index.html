@@ -14,20 +14,20 @@
         }
         .logo img {
             max-width: 150px;
-            margin: 10px auto 10px;
+            margin: 10px auto 5px;
         }
         .container, .transaction-container {
-            max-width: 600px;
-            margin: 20px auto;
+            max-width: 700px;
+            margin: 15px auto;
             background: white;
-            padding: 25px;
-            border-radius: 18px;
+            padding: 20px;
+            border-radius: 20px;
             text-align: left;
         }
         .balance {
             font-size: 18px;
             color: #666;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
         .credits {
             font-size: 32px;
@@ -35,18 +35,20 @@
             color: #000;
             margin-bottom: 5px;
         }
+        .extra-info {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 10px;
+        }
         .refill {
             color: #007BFF;
             text-decoration: none;
             font-size: 14px;
             display: inline-block;
-            margin-top: 2px;
+            margin-top: 5px;
         }
         .refill:hover {
             text-decoration: underline;
-        }
-        .refill:link {
-            target: _blank;
         }
         .transaction table {
             width: 100%;
@@ -55,7 +57,7 @@
         }
         .transaction th, .transaction td {
             padding: 8px;
-            text-align: center;
+            border-bottom: 1px solid #ddd;
         }
         .transaction th {
             color: #666;
@@ -71,11 +73,23 @@
     <div class="container">
         <div class="balance">Account Balance</div>
         <div class="credits" id="creditBalance">Loading...</div>
+        <div class="extra-info" id="extraInfo">Loading...</div>
         <a href="https://quickedits.myclickfunnels.com/custom-package" class="refill" target="_blank">Refill Credits</a>
     </div>
 
     <div class="transaction-container">
         <div class="balance">Transaction History</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Order Token</th>
+                    <th>Credit Usage</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody id="transactionHistory">
+            </tbody>
+        </table>
     </div>
 
     <script>
@@ -95,6 +109,18 @@
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById("creditBalance").textContent = `${data.credits} Credits`;
+                    document.getElementById("extraInfo").textContent = `${data.longFormsLeft} Long-forms Or ${data.shortFormsLeft} Short-forms Or ${data.thumbnailsLeft} Thumbnails`;
+                    
+                    const transactionTable = document.getElementById("transactionHistory");
+                    transactionTable.innerHTML = "";
+                    data.orders.forEach(order => {
+                        const row = `<tr>
+                            <td>${order.orderToken}</td>
+                            <td>${order.creditUsage}</td>
+                            <td>${order.date}</td>
+                        </tr>`;
+                        transactionTable.innerHTML += row;
+                    });
                 })
                 .catch(error => {
                     console.error("Error fetching credits:", error);
