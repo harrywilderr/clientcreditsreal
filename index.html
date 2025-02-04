@@ -67,12 +67,15 @@
         }
         .transaction-table .left {
             text-align: left;
+            font-weight: bold; /* Keep bold for the headers */
         }
         .transaction-table .center {
             text-align: center;
+            font-weight: bold; /* Keep bold for the headers */
         }
         .transaction-table .right {
             text-align: right;
+            font-weight: bold; /* Keep bold for the headers */
         }
         #extras {
             font-size: 16px;
@@ -84,6 +87,9 @@
         #extras .inline {
             display: inline-block;
             margin-right: 15px;
+        }
+        #extras .inline b {
+            font-weight: bold; /* Keep OR bold */
         }
     </style>
 </head>
@@ -115,7 +121,9 @@
                     document.getElementById('credits').innerText = `${data.credits} Credits`;
                     document.getElementById('extras').innerHTML = `
                         <span class="inline">${data.longFormsLeft} Long-forms</span>
+                        <span class="inline"><b>OR</b></span>
                         <span class="inline">${data.shortFormsLeft} Short-forms</span>
+                        <span class="inline"><b>OR</b></span>
                         <span class="inline">${data.thumbnailsLeft} Thumbnails</span>`;
                     const transactionTable = document.getElementById('transactionTable');
                     data.orders.forEach(order => {
