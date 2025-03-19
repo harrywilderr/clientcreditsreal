@@ -13,7 +13,7 @@ export async function handler(event) {
     };
   }
 
-  const googleScriptUrl = `https://script.google.com/macros/s/AKfycbzM68PqdpnXuwPeBNBHanUy22o09QNzMUcmzr08PXpyok4xTb7VCxACTvARuqvg2Ho-yQ/exec?email=${encodeURIComponent(email)}`;
+  const googleScriptUrl = `https://script.google.com/macros/s/AKfycbwxbsyCBzGulAiJ5BcZ_UWpWz5Oew2y85WWQrQithOiJUYXMNseGlDkJg_I7GsgZxcjSg/exec?email=${encodeURIComponent(email)}`;
 
   try {
     const response = await fetch(googleScriptUrl);
