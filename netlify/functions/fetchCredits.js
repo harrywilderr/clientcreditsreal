@@ -1,7 +1,7 @@
 import querystring from 'querystring';
 
 export async function handler(event) {
-  const headers = {
+  const baseHeaders = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type"
@@ -10,12 +10,12 @@ export async function handler(event) {
   if (event.httpMethod === 'OPTIONS') {
     return {
       statusCode: 200,
-      headers,
+      headers: baseHeaders,
       body: ''
     };
   }
 
-  // ✅ GET: your existing fetchCredits logic
+  // ✅ GET: fetchCredits logic
   if (event.httpMethod === 'GET') {
     const { email } = event.queryStringParameters || {};
 
@@ -23,7 +23,7 @@ export async function handler(event) {
       return {
         statusCode: 400,
         body: JSON.stringify({ error: 'Email is required.' }),
-        headers
+        headers: baseHeaders
       };
     }
 
@@ -36,18 +36,18 @@ export async function handler(event) {
       return {
         statusCode: 200,
         body: JSON.stringify(data),
-        headers
+        headers: baseHeaders
       };
     } catch (error) {
       return {
         statusCode: 500,
         body: JSON.stringify({ error: 'Error fetching data from Google Apps Script.', details: error.message }),
-        headers
+        headers: baseHeaders
       };
     }
   }
 
-  // ✅ POST: Handle Google Sign-In redirect
+  // ✅ POST: Google Sign-In redirect
   if (event.httpMethod === 'POST') {
     const parsedBody = querystring.parse(event.body);
     const idToken = parsedBody.credential;
@@ -56,7 +56,7 @@ export async function handler(event) {
       return {
         statusCode: 400,
         body: 'Missing credential token',
-        headers
+        headers: baseHeaders
       };
     }
 
@@ -65,12 +65,14 @@ export async function handler(event) {
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
       const jsonPayload = JSON.parse(Buffer.from(base64, 'base64').toString());
       const email = jsonPayload.email;
+      const name = jsonPayload.name;
+      const picture = jsonPayload.picture;
 
       if (!email) {
         return {
           statusCode: 400,
           body: 'Email not found in token',
-          headers
+          headers: baseHeaders
         };
       }
 
@@ -82,19 +84,31 @@ export async function handler(event) {
         ? 'https://portal.cutline.co'
         : 'https://www.cutline.co/onboarding';
 
+      // ✅ Set cookies for .cutline.co
+      const cookieOptions = 'Path=/; Domain=.cutline.co; Secure; HttpOnly; SameSite=Lax';
+      const now = new Date();
+      const expires = new Date(now.getTime() + 24 * 60 * 60 * 1000).toUTCString(); // 1 day
+
+      const setCookies = [
+        `id_token=${idToken}; Expires=${expires}; ${cookieOptions}`,
+        `email=${encodeURIComponent(email)}; Expires=${expires}; ${cookieOptions}`,
+        `profile=${encodeURIComponent(JSON.stringify({ name, picture }))}; Expires=${expires}; ${cookieOptions}`
+      ];
+
       return {
         statusCode: 302,
         headers: {
           Location: redirectTo,
-          ...headers
+          'Set-Cookie': setCookies,
+          ...baseHeaders
         },
         body: ''
       };
     } catch (err) {
       return {
         statusCode: 500,
-        body: JSON.stringify({ error: 'Error decoding token', details: err.message }),
-        headers
+        body: JSON.stringify({ error: 'Error decoding token or fetching client data', details: err.message }),
+        headers: baseHeaders
       };
     }
   }
@@ -102,6 +116,6 @@ export async function handler(event) {
   return {
     statusCode: 405,
     body: 'Method Not Allowed',
-    headers
+    headers: baseHeaders
   };
 }
