@@ -96,12 +96,16 @@ export async function handler(event) {
       ];
 
       return {
-        statusCode: 302,
-        headers: {
-          Location: redirectTo,
-          'Set-Cookie': setCookies,
-          ...baseHeaders
-        },
+  statusCode: 302,
+  multiValueHeaders: {
+    'Set-Cookie': [
+      `id_token=${idToken}; Expires=${expires}; ${cookieOptions}`,
+      `email=${encodeURIComponent(email)}; Expires=${expires}; ${cookieOptions}`,
+      `profile=${encodeURIComponent(JSON.stringify({ name, picture }))}; Expires=${expires}; ${cookieOptions}`
+    ],
+    Location: [redirectTo],
+    ...baseHeaders
+  },
         body: ''
       };
     } catch (err) {
