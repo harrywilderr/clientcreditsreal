@@ -27,7 +27,7 @@ export async function handler(event) {
       };
     }
 
-    const googleScriptUrl = `https://script.google.com/macros/s/AKfycbyoGfjkb-E39JpKLKL-9clOCjQz032ncWRcH9pgYgRUYRhM2rVBhMe51PzFaERVdZ0ZWQ/exec?email=${encodeURIComponent(email)}`;
+    const googleScriptUrl = `https://script.google.com/macros/s/AKfycbwOzIRST5PxbMEXidHyo-QK7mBswP4RRL6KXbZ8I-qaKmFzh4ic7h1gavznOIClH1Pu0g/exec?email=${encodeURIComponent(email)}`;
 
     try {
       const response = await fetch(googleScriptUrl);
@@ -74,7 +74,7 @@ export async function handler(event) {
         };
       }
 
-      const googleScriptUrl = `https://script.google.com/macros/s/AKfycbyoGfjkb-E39JpKLKL-9clOCjQz032ncWRcH9pgYgRUYRhM2rVBhMe51PzFaERVdZ0ZWQ/exec?email=${encodeURIComponent(email)}`;
+      const googleScriptUrl = `https://script.google.com/macros/s/AKfycbwOzIRST5PxbMEXidHyo-QK7mBswP4RRL6KXbZ8I-qaKmFzh4ic7h1gavznOIClH1Pu0g/exec?email=${encodeURIComponent(email)}`;
       const response = await fetch(googleScriptUrl);
       const data = await response.json();
 
