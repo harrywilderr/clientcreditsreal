@@ -84,28 +84,23 @@ export async function handler(event) {
         ? 'https://portal.cutline.co'
         : 'https://www.cutline.co/onboarding';
 
-      // ✅ Set cookies for .cutline.co
       const cookieOptions = 'Path=/; Domain=.cutline.co; Secure; HttpOnly; SameSite=Lax';
       const now = new Date();
-      const expires = new Date(now.getTime() + 24 * 60 * 60 * 1000).toUTCString(); // 1 day
-
-      const setCookies = [
-        `id_token=${idToken}; Expires=${expires}; ${cookieOptions}`,
-        `email=${encodeURIComponent(email)}; Expires=${expires}; ${cookieOptions}`,
-        `profile=${encodeURIComponent(JSON.stringify({ name, picture }))}; Expires=${expires}; ${cookieOptions}`
-      ];
+      const expires = new Date(now.getTime() + 24 * 60 * 60 * 1000).toUTCString();
 
       return {
-  statusCode: 302,
-  multiValueHeaders: {
-    'Set-Cookie': [
-      `id_token=${idToken}; Expires=${expires}; ${cookieOptions}`,
-      `email=${encodeURIComponent(email)}; Expires=${expires}; ${cookieOptions}`,
-      `profile=${encodeURIComponent(JSON.stringify({ name, picture }))}; Expires=${expires}; ${cookieOptions}`
-    ],
-    Location: [redirectTo],
-    ...baseHeaders
-  },
+        statusCode: 302,
+        multiValueHeaders: {
+          'Set-Cookie': [
+            `id_token=${idToken}; Expires=${expires}; ${cookieOptions}`,
+            `email=${encodeURIComponent(email)}; Expires=${expires}; ${cookieOptions}`,
+            `profile=${encodeURIComponent(JSON.stringify({ name, picture }))}; Expires=${expires}; ${cookieOptions}`
+          ],
+          'Location': [redirectTo],
+          'Access-Control-Allow-Origin': ['*'],
+          'Access-Control-Allow-Methods': ['GET, POST, OPTIONS'],
+          'Access-Control-Allow-Headers': ['Content-Type']
+        },
         body: ''
       };
     } catch (err) {
