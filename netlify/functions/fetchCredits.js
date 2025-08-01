@@ -84,17 +84,19 @@ export async function handler(event) {
         ? 'https://portal.cutline.co'
         : 'https://www.cutline.co/onboarding';
 
-      const cookieOptions = 'Path=/; Domain=.cutline.co; Secure; HttpOnly; SameSite=Lax';
+      // ✅ Cookie setup
+      const cookieBase = 'Path=/; Domain=.cutline.co; Secure; SameSite=Lax';
+      const httpOnlyCookie = `${cookieBase}; HttpOnly`;
       const now = new Date();
-      const expires = new Date(now.getTime() + 24 * 60 * 60 * 1000).toUTCString();
+      const expires = new Date(now.getTime() + 24 * 60 * 60 * 1000).toUTCString(); // 1 day
 
       return {
         statusCode: 302,
         multiValueHeaders: {
           'Set-Cookie': [
-            `id_token=${idToken}; Expires=${expires}; ${cookieOptions}`,
-            `email=${encodeURIComponent(email)}; Expires=${expires}; ${cookieOptions}`,
-            `profile=${encodeURIComponent(JSON.stringify({ name, picture }))}; Expires=${expires}; ${cookieOptions}`
+            `id_token=${idToken}; Expires=${expires}; ${httpOnlyCookie}`,
+            `email=${encodeURIComponent(email)}; Expires=${expires}; ${cookieBase}`,
+            `profile=${encodeURIComponent(JSON.stringify({ name, picture }))}; Expires=${expires}; ${cookieBase}`
           ],
           'Location': [redirectTo],
           'Access-Control-Allow-Origin': ['*'],
