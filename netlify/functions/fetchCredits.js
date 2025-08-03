@@ -85,7 +85,7 @@ export async function handler(event) {
         : 'https://www.cutline.co/onboarding';
 
       // ✅ Cookie setup
-      const cookieBase = 'Path=/; Domain=.cutline.co; Secure; SameSite=Lax';
+      const cookieBase = 'Path=/; Secure; SameSite=Lax'; // remove Domain
       const httpOnlyCookie = `${cookieBase}; HttpOnly`;
       const now = new Date();
       const expires = new Date(now.getTime() + 24 * 60 * 60 * 1000).toUTCString(); // 1 day
